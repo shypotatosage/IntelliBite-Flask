@@ -4,7 +4,7 @@ import json
 
 app = Flask(__name__)
 
-@app.route("/<name>")
+@app.route("/get-fruitvegetables/<name>")
 def get_fruit_vegetables(name):
     df = pd.read_csv ('fruitvegetable.csv', delimiter=';')
     df_json = df.loc[df['name'] == name].to_json(orient="records")[1:-1]

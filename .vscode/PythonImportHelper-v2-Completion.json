@@ -47,7 +47,7 @@
         "kind": 5,
         "importPath": "IntelliBite-Flask-project.app",
         "description": "IntelliBite-Flask-project.app",
-        "peekOfCode": "app = Flask(__name__)\n@app.route(\"/<name>\")\ndef get_fruit_vegetables(name):\n    df = pd.read_csv ('fruitvegetable.csv', delimiter=';')\n    df_json = df.loc[df['name'] == name].to_json(orient=\"records\")[1:-1]\n    if not df.loc[df['name'] == name].empty:\n        return json.dumps({'status': 200, 'message': \"success\", 'data': json.loads(df_json)})\n    else:\n        return Response(json.dumps({'status': 404, 'message': \"Fruit/Vegetable Not Found\", 'data': \"\"}), status=404, mimetype='application/json')\nif __name__ == \"__main__\":",
+        "peekOfCode": "app = Flask(__name__)\n@app.route(\"/get-fruitvegetables/<name>\")\ndef get_fruit_vegetables(name):\n    df = pd.read_csv ('fruitvegetable.csv', delimiter=';')\n    df_json = df.loc[df['name'] == name].to_json(orient=\"records\")[1:-1]\n    if not df.loc[df['name'] == name].empty:\n        return json.dumps({'status': 200, 'message': \"success\", 'data': json.loads(df_json)})\n    else:\n        return Response(json.dumps({'status': 404, 'message': \"Fruit/Vegetable Not Found\", 'data': \"\"}), status=404, mimetype='application/json')\nif __name__ == \"__main__\":",
         "detail": "IntelliBite-Flask-project.app",
         "documentation": {}
     }
