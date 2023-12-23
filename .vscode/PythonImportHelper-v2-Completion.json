@@ -1,0 +1,28 @@
+[
+    {
+        "label": "Flask",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "hello_world",
+        "kind": 2,
+        "importPath": "IntelliBite-Flask-project.app",
+        "description": "IntelliBite-Flask-project.app",
+        "peekOfCode": "def hello_world():\n    return \"<p>Hello, World!</p>\"\nif __name__ == \"__main__\":\n    app.run()",
+        "detail": "IntelliBite-Flask-project.app",
+        "documentation": {}
+    },
+    {
+        "label": "app",
+        "kind": 5,
+        "importPath": "IntelliBite-Flask-project.app",
+        "description": "IntelliBite-Flask-project.app",
+        "peekOfCode": "app = Flask(__name__)\n@app.route(\"/\")\ndef hello_world():\n    return \"<p>Hello, World!</p>\"\nif __name__ == \"__main__\":\n    app.run()",
+        "detail": "IntelliBite-Flask-project.app",
+        "documentation": {}
+    }
+]
