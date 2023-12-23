@@ -38,7 +38,25 @@
         "kind": 2,
         "importPath": "IntelliBite-Flask-project.app",
         "description": "IntelliBite-Flask-project.app",
-        "peekOfCode": "def get_fruit_vegetables(name):\n    df = pd.read_csv ('fruitvegetable.csv', delimiter=';')\n    df_json = df.loc[df['name'] == name].to_json(orient=\"records\")[1:-1]\n    if not df.loc[df['name'] == name].empty:\n        return json.dumps({'status': 200, 'message': \"success\", 'data': json.loads(df_json)})\n    else:\n        return Response(json.dumps({'status': 404, 'message': \"Fruit/Vegetable Not Found\", 'data': \"\"}), status=404, mimetype='application/json')\nif __name__ == \"__main__\":\n    app.run()",
+        "peekOfCode": "def get_fruit_vegetables(name):\n    df = pd.read_csv('fruitvegetable.csv', delimiter=';')\n    df_json = df.loc[df['name'] == name].to_json(orient=\"records\")[1:-1]\n    if not df.loc[df['name'] == name].empty:\n        return json.dumps({'status': 200, 'message': \"success\", 'data': json.loads(df_json)})\n    else:\n        return Response(json.dumps({'status': 404, 'message': \"Fruit/Vegetable Not Found\", 'data': \"\"}), status=404, mimetype='application/json')\n@app.route(\"/get-ingredients\")\ndef get_ingredients():\n    df = pd.read_csv('data.csv', delimiter='#')",
+        "detail": "IntelliBite-Flask-project.app",
+        "documentation": {}
+    },
+    {
+        "label": "get_ingredients",
+        "kind": 2,
+        "importPath": "IntelliBite-Flask-project.app",
+        "description": "IntelliBite-Flask-project.app",
+        "peekOfCode": "def get_ingredients():\n    df = pd.read_csv('data.csv', delimiter='#')\n    ingredient_list = df['ingredients'].values.astype('str')\n    ingredient_list = \"$\".join(ingredient_list)\n    ingredient_list = ingredient_list.split('$')\n    df_ingredient = pd.DataFrame(ingredient_list)\n    df_json = df_ingredient[0].to_json(orient=\"records\")\n    return json.dumps({'status': 200, 'message': \"success\", 'data': json.loads(df_json)})\n@app.route(\"/get-nutrition-profiles\")\ndef get_nutrition_profiles():",
+        "detail": "IntelliBite-Flask-project.app",
+        "documentation": {}
+    },
+    {
+        "label": "get_nutrition_profiles",
+        "kind": 2,
+        "importPath": "IntelliBite-Flask-project.app",
+        "description": "IntelliBite-Flask-project.app",
+        "peekOfCode": "def get_nutrition_profiles():\n    df = pd.read_csv('data.csv', delimiter='#')\n    nutrition_profiles_list = df['nutrition_profiles'].values.astype('str')\n    nutrition_profiles_list = \"$\".join(nutrition_profiles_list)\n    nutrition_profiles_list = nutrition_profiles_list.split('$')\n    df_nutrition_profiles = pd.DataFrame(nutrition_profiles_list)\n    df_json = df_nutrition_profiles[0].to_json(orient=\"records\")\n    return json.dumps({'status': 200, 'message': \"success\", 'data': json.loads(df_json)})\nif __name__ == \"__main__\":\n    app.run()",
         "detail": "IntelliBite-Flask-project.app",
         "documentation": {}
     },
@@ -47,7 +65,7 @@
         "kind": 5,
         "importPath": "IntelliBite-Flask-project.app",
         "description": "IntelliBite-Flask-project.app",
-        "peekOfCode": "app = Flask(__name__)\n@app.route(\"/get-fruitvegetables/<name>\")\ndef get_fruit_vegetables(name):\n    df = pd.read_csv ('fruitvegetable.csv', delimiter=';')\n    df_json = df.loc[df['name'] == name].to_json(orient=\"records\")[1:-1]\n    if not df.loc[df['name'] == name].empty:\n        return json.dumps({'status': 200, 'message': \"success\", 'data': json.loads(df_json)})\n    else:\n        return Response(json.dumps({'status': 404, 'message': \"Fruit/Vegetable Not Found\", 'data': \"\"}), status=404, mimetype='application/json')\nif __name__ == \"__main__\":",
+        "peekOfCode": "app = Flask(__name__)\n@app.route(\"/get-fruitvegetables/<name>\")\ndef get_fruit_vegetables(name):\n    df = pd.read_csv('fruitvegetable.csv', delimiter=';')\n    df_json = df.loc[df['name'] == name].to_json(orient=\"records\")[1:-1]\n    if not df.loc[df['name'] == name].empty:\n        return json.dumps({'status': 200, 'message': \"success\", 'data': json.loads(df_json)})\n    else:\n        return Response(json.dumps({'status': 404, 'message': \"Fruit/Vegetable Not Found\", 'data': \"\"}), status=404, mimetype='application/json')\n@app.route(\"/get-ingredients\")",
         "detail": "IntelliBite-Flask-project.app",
         "documentation": {}
     }
