@@ -1,6 +1,10 @@
+# from crypt import methods
 from flask import Flask, Response
 import pandas as pd
 import json
+
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 app = Flask(__name__)
 
@@ -25,6 +29,7 @@ def get_ingredients():
     
     return json.dumps({'status': 200, 'message': "success", 'data': json.loads(df_json)})
 
+
 @app.route("/get-nutrition-profiles")
 def get_nutrition_profiles():
     df = pd.read_csv('data.csv', delimiter='#')
@@ -35,6 +40,41 @@ def get_nutrition_profiles():
     df_json = df_nutrition_profiles[0].to_json(orient="records")
     
     return json.dumps({'status': 200, 'message': "success", 'data': json.loads(df_json)})
+
+
+# Fungsi untuk mendapatkan vektor fitur dari bahan dan profil nutrisi
+def get_feature_vector(recipe):
+    ingredients_list = recipe['ingredients'].split(', ')
+    nutrition_profiles_list = recipe['nutrition_profiles'].split(', ')
+    feature_vector = ingredients_list + nutrition_profiles_list
+    return ' '.join(feature_vector)
+
+# Membuat matriks vektor fitur
+dfRecipe = pd.read_csv('data.csv', delimiter='#')
+    
+vectorizer = CountVectorizer()
+feature_matrix = vectorizer.fit_transform([get_feature_vector(recipe) for _, recipe in dfRecipe.iterrows()])
+
+# Calculate cosine similarity
+cosine_sim = cosine_similarity(feature_matrix)
+
+@app.route("/get-recipes/<ingredients>/<nutrition_profiles>", methods=['GET'])
+def recipes(ingredients, nutrition_profiles):
+    # Process user input
+    user_input = get_feature_vector({'ingredients': ingredients, 'nutrition_profiles': nutrition_profiles})
+    user_input_vector = vectorizer.transform([user_input])
+
+    # Calculate cosine similarity with user input
+    similarity_scores = cosine_similarity(user_input_vector, feature_matrix).flatten()
+
+    # Get indices of top recipes
+    top_indices = similarity_scores.argsort()[:-6:-1]  # Get top 5 recipes
+
+    # Get recommended recipes
+    recommended_recipes = dfRecipe.iloc[top_indices][['recipe_name', 'ingredients', 'nutrition_profiles']].to_dict(orient='records')
+
+    return json.dumps({'status': 200, 'message': "success", 'data': recommended_recipes})
+
 
 if __name__ == "__main__":
     app.run()
