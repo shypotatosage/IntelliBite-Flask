@@ -18,7 +18,7 @@ def get_fruit_vegetables(name):
     else:
         return Response(json.dumps({'status': 404, 'message': "Fruit/Vegetable Not Found", 'data': ""}), status=404, mimetype='application/json')
 
-@app.route("/get-ingredients")
+@app.route("")
 def get_ingredients():
     df = pd.read_csv('data.csv', delimiter='#')
     ingredient_list = df['ingredients'].values.astype('str')
@@ -51,7 +51,7 @@ def get_feature_vector(recipe):
 
 # Membuat matriks vektor fitur
 dfRecipe = pd.read_csv('data.csv', delimiter='#')
-    
+
 vectorizer = CountVectorizer()
 feature_matrix = vectorizer.fit_transform([get_feature_vector(recipe) for _, recipe in dfRecipe.iterrows()])
 
@@ -67,11 +67,11 @@ def recipes(ingredients, nutrition_profiles):
     # Calculate cosine similarity with user input
     similarity_scores = cosine_similarity(user_input_vector, feature_matrix).flatten()
 
-    # Get indices of top recipes
-    top_indices = similarity_scores.argsort()[:-6:-1]  # Get top 5 recipes
+    # Get indices of all recipes ordered by similarity
+    ordered_indices = similarity_scores.argsort()[::-1]
 
     # Get recommended recipes
-    recommended_recipes = dfRecipe.iloc[top_indices][['recipe_name', 'ingredients', 'nutrition_profiles']].to_dict(orient='records')
+    recommended_recipes = dfRecipe.iloc[ordered_indices][['recipe_name', 'ingredients', 'nutrition_profiles']].to_dict(orient='records')
 
     return json.dumps({'status': 200, 'message': "success", 'data': recommended_recipes})
 
