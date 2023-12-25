@@ -18,7 +18,7 @@ def get_fruit_vegetables(name):
     else:
         return Response(json.dumps({'status': 404, 'message': "Fruit/Vegetable Not Found", 'data': ""}), status=404, mimetype='application/json')
 
-@app.route("")
+@app.route("/get-ingredients")
 def get_ingredients():
     df = pd.read_csv('data.csv', delimiter='#')
     ingredient_list = df['ingredients'].values.astype('str')
@@ -51,7 +51,7 @@ def get_feature_vector(recipe):
 
 # Membuat matriks vektor fitur
 dfRecipe = pd.read_csv('data.csv', delimiter='#')
-
+    
 vectorizer = CountVectorizer()
 feature_matrix = vectorizer.fit_transform([get_feature_vector(recipe) for _, recipe in dfRecipe.iterrows()])
 
@@ -70,11 +70,21 @@ def recipes(ingredients, nutrition_profiles):
     # Get indices of all recipes ordered by similarity
     ordered_indices = similarity_scores.argsort()[::-1]
 
-    # Get recommended recipes
-    recommended_recipes = dfRecipe.iloc[ordered_indices][['recipe_name', 'ingredients', 'nutrition_profiles']].to_dict(orient='records')
+    # Get recommended recipes with servings and timetotal
+    recommended_recipes = dfRecipe.iloc[ordered_indices][['recipe_name', 'ingredients', 'nutrition_profiles', 'servings', 'timetotal']].to_dict(orient='records')
 
     return json.dumps({'status': 200, 'message': "success", 'data': recommended_recipes})
 
+@app.route("/get-detailrecipe/<recipeid>", methods=['GET'])
+def detailrecipe(recipeid):
+    recipeid = int(recipeid)  # Convert recipeid to integer
+    if 0 <= recipeid < len(dfRecipe):
+        # Get detailed information about the selected recipe
+        selected_recipe = dfRecipe.iloc[recipeid].to_dict()
+
+        return json.dumps({'status': 200, 'message': "success", 'data': selected_recipe})
+    else:
+        return Response(json.dumps({'status': 404, 'message': "Recipe Not Found", 'data': ""}), status=404, mimetype='application/json')
 
 if __name__ == "__main__":
     app.run()
