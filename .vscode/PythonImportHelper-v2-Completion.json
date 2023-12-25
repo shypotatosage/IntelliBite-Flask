@@ -34,6 +34,22 @@
         "documentation": {}
     },
     {
+        "label": "CountVectorizer",
+        "importPath": "sklearn.feature_extraction.text",
+        "description": "sklearn.feature_extraction.text",
+        "isExtraImport": true,
+        "detail": "sklearn.feature_extraction.text",
+        "documentation": {}
+    },
+    {
+        "label": "cosine_similarity",
+        "importPath": "sklearn.metrics.pairwise",
+        "description": "sklearn.metrics.pairwise",
+        "isExtraImport": true,
+        "detail": "sklearn.metrics.pairwise",
+        "documentation": {}
+    },
+    {
         "label": "get_fruit_vegetables",
         "kind": 2,
         "importPath": "IntelliBite-Flask-project.app",
@@ -56,7 +72,34 @@
         "kind": 2,
         "importPath": "IntelliBite-Flask-project.app",
         "description": "IntelliBite-Flask-project.app",
-        "peekOfCode": "def get_nutrition_profiles():\n    df = pd.read_csv('data.csv', delimiter='#')\n    nutrition_profiles_list = df['nutrition_profiles'].values.astype('str')\n    nutrition_profiles_list = \"$\".join(nutrition_profiles_list)\n    nutrition_profiles_list = nutrition_profiles_list.split('$')\n    df_nutrition_profiles = pd.DataFrame(nutrition_profiles_list)\n    df_json = df_nutrition_profiles[0].to_json(orient=\"records\")\n    return json.dumps({'status': 200, 'message': \"success\", 'data': json.loads(df_json)})\nif __name__ == \"__main__\":\n    app.run()",
+        "peekOfCode": "def get_nutrition_profiles():\n    df = pd.read_csv('data.csv', delimiter='#')\n    nutrition_profiles_list = df['nutrition_profiles'].values.astype('str')\n    nutrition_profiles_list = \"$\".join(nutrition_profiles_list)\n    nutrition_profiles_list = nutrition_profiles_list.split('$')\n    df_nutrition_profiles = pd.DataFrame(nutrition_profiles_list)\n    df_json = df_nutrition_profiles[0].to_json(orient=\"records\")\n    return json.dumps({'status': 200, 'message': \"success\", 'data': json.loads(df_json)})\n# Fungsi untuk mendapatkan vektor fitur dari bahan dan profil nutrisi\ndef get_feature_vector(recipe):",
+        "detail": "IntelliBite-Flask-project.app",
+        "documentation": {}
+    },
+    {
+        "label": "get_feature_vector",
+        "kind": 2,
+        "importPath": "IntelliBite-Flask-project.app",
+        "description": "IntelliBite-Flask-project.app",
+        "peekOfCode": "def get_feature_vector(recipe):\n    ingredients_list = recipe['ingredients'].split(', ')\n    nutrition_profiles_list = recipe['nutrition_profiles'].split(', ')\n    feature_vector = ingredients_list + nutrition_profiles_list\n    return ' '.join(feature_vector)\n# Membuat matriks vektor fitur\ndfRecipe = pd.read_csv('data.csv', delimiter='#')\nvectorizer = CountVectorizer()\nfeature_matrix = vectorizer.fit_transform([get_feature_vector(recipe) for _, recipe in dfRecipe.iterrows()])\n# Calculate cosine similarity",
+        "detail": "IntelliBite-Flask-project.app",
+        "documentation": {}
+    },
+    {
+        "label": "recipes",
+        "kind": 2,
+        "importPath": "IntelliBite-Flask-project.app",
+        "description": "IntelliBite-Flask-project.app",
+        "peekOfCode": "def recipes(ingredients, nutrition_profiles):\n    # Process user input\n    user_input = get_feature_vector({'ingredients': ingredients, 'nutrition_profiles': nutrition_profiles})\n    user_input_vector = vectorizer.transform([user_input])\n    # Calculate cosine similarity with user input\n    similarity_scores = cosine_similarity(user_input_vector, feature_matrix).flatten()\n    # Get indices of all recipes ordered by similarity\n    ordered_indices = similarity_scores.argsort()[::-1]\n    # Get recommended recipes with servings and timetotal\n    recommended_recipes = dfRecipe.iloc[ordered_indices][['recipe_name', 'ingredients', 'nutrition_profiles', 'servings', 'timetotal']].to_dict(orient='records')",
+        "detail": "IntelliBite-Flask-project.app",
+        "documentation": {}
+    },
+    {
+        "label": "detailrecipe",
+        "kind": 2,
+        "importPath": "IntelliBite-Flask-project.app",
+        "description": "IntelliBite-Flask-project.app",
+        "peekOfCode": "def detailrecipe(name):\n    if not dfRecipe.loc[dfRecipe[\"recipe_name\"] == name].empty:\n        # Get detailed information about the selected recipe\n        selected_recipe = dfRecipe.loc[dfRecipe[\"recipe_name\"] == name].to_json(orient=\"records\")[1:-1]\n        return json.dumps({'status': 200, 'message': \"success\", 'data': json.loads(selected_recipe)})\n    else:\n        return Response(json.dumps({'status': 404, 'message': \"Recipe Not Found\", 'data': \"\"}), status=404, mimetype='application/json')\nif __name__ == \"__main__\":\n    app.run()",
         "detail": "IntelliBite-Flask-project.app",
         "documentation": {}
     },
@@ -70,11 +113,38 @@
         "documentation": {}
     },
     {
-        "label": "get-recipes",
-        "kind": 2,
+        "label": "dfRecipe",
+        "kind": 5,
         "importPath": "IntelliBite-Flask-project.app",
         "description": "IntelliBite-Flask-project.app",
-        "peekOfCode": "def get_nutrition_profiles():\n    df = pd.read_csv('data.csv', delimiter='#')\n    nutrition_profiles_list = df['nutrition_profiles'].values.astype('str')\n    nutrition_profiles_list = \"$\".join(nutrition_profiles_list)\n    nutrition_profiles_list = nutrition_profiles_list.split('$')\n    df_nutrition_profiles = pd.DataFrame(nutrition_profiles_list)\n    df_json = df_nutrition_profiles[0].to_json(orient=\"records\")\n    return json.dumps({'status': 200, 'message': \"success\", 'data': json.loads(df_json)})\nif __name__ == \"__main__\":\n    app.run()",
+        "peekOfCode": "dfRecipe = pd.read_csv('data.csv', delimiter='#')\nvectorizer = CountVectorizer()\nfeature_matrix = vectorizer.fit_transform([get_feature_vector(recipe) for _, recipe in dfRecipe.iterrows()])\n# Calculate cosine similarity\ncosine_sim = cosine_similarity(feature_matrix)\n@app.route(\"/get-recipes/<ingredients>/<nutrition_profiles>\", methods=['GET'])\ndef recipes(ingredients, nutrition_profiles):\n    # Process user input\n    user_input = get_feature_vector({'ingredients': ingredients, 'nutrition_profiles': nutrition_profiles})\n    user_input_vector = vectorizer.transform([user_input])",
+        "detail": "IntelliBite-Flask-project.app",
+        "documentation": {}
+    },
+    {
+        "label": "vectorizer",
+        "kind": 5,
+        "importPath": "IntelliBite-Flask-project.app",
+        "description": "IntelliBite-Flask-project.app",
+        "peekOfCode": "vectorizer = CountVectorizer()\nfeature_matrix = vectorizer.fit_transform([get_feature_vector(recipe) for _, recipe in dfRecipe.iterrows()])\n# Calculate cosine similarity\ncosine_sim = cosine_similarity(feature_matrix)\n@app.route(\"/get-recipes/<ingredients>/<nutrition_profiles>\", methods=['GET'])\ndef recipes(ingredients, nutrition_profiles):\n    # Process user input\n    user_input = get_feature_vector({'ingredients': ingredients, 'nutrition_profiles': nutrition_profiles})\n    user_input_vector = vectorizer.transform([user_input])\n    # Calculate cosine similarity with user input",
+        "detail": "IntelliBite-Flask-project.app",
+        "documentation": {}
+    },
+    {
+        "label": "feature_matrix",
+        "kind": 5,
+        "importPath": "IntelliBite-Flask-project.app",
+        "description": "IntelliBite-Flask-project.app",
+        "peekOfCode": "feature_matrix = vectorizer.fit_transform([get_feature_vector(recipe) for _, recipe in dfRecipe.iterrows()])\n# Calculate cosine similarity\ncosine_sim = cosine_similarity(feature_matrix)\n@app.route(\"/get-recipes/<ingredients>/<nutrition_profiles>\", methods=['GET'])\ndef recipes(ingredients, nutrition_profiles):\n    # Process user input\n    user_input = get_feature_vector({'ingredients': ingredients, 'nutrition_profiles': nutrition_profiles})\n    user_input_vector = vectorizer.transform([user_input])\n    # Calculate cosine similarity with user input\n    similarity_scores = cosine_similarity(user_input_vector, feature_matrix).flatten()",
+        "detail": "IntelliBite-Flask-project.app",
+        "documentation": {}
+    },
+    {
+        "label": "cosine_sim",
+        "kind": 5,
+        "importPath": "IntelliBite-Flask-project.app",
+        "description": "IntelliBite-Flask-project.app",
+        "peekOfCode": "cosine_sim = cosine_similarity(feature_matrix)\n@app.route(\"/get-recipes/<ingredients>/<nutrition_profiles>\", methods=['GET'])\ndef recipes(ingredients, nutrition_profiles):\n    # Process user input\n    user_input = get_feature_vector({'ingredients': ingredients, 'nutrition_profiles': nutrition_profiles})\n    user_input_vector = vectorizer.transform([user_input])\n    # Calculate cosine similarity with user input\n    similarity_scores = cosine_similarity(user_input_vector, feature_matrix).flatten()\n    # Get indices of all recipes ordered by similarity\n    ordered_indices = similarity_scores.argsort()[::-1]",
         "detail": "IntelliBite-Flask-project.app",
         "documentation": {}
     }
