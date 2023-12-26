@@ -70,10 +70,16 @@ def recipes(ingredients, nutrition_profiles):
     # Get indices of all recipes ordered by similarity
     ordered_indices = similarity_scores.argsort()[::-1]
 
+    # Print cosine similarity scores
+    print("Cosine Similarity Scores:")
+    for idx, score in zip(ordered_indices, similarity_scores[ordered_indices]):
+        print(f"Recipe: {dfRecipe.iloc[idx]['recipe_name']}, Similarity Score: {score}")
+
     # Get recommended recipes with servings and timetotal
-    recommended_recipes = dfRecipe.iloc[ordered_indices][['recipe_name', 'ingredients', 'nutrition_profiles', 'servings', 'timetotal']].to_dict(orient='records')
+    recommended_recipes = dfRecipe.iloc[ordered_indices][['recipe_name','servings', 'timetotal']].to_dict(orient='records')
 
     return json.dumps({'status': 200, 'message': "success", 'data': recommended_recipes})
+
 
 @app.route("/get-detailrecipe/<recipeid>", methods=['GET'])
 def detailrecipe(recipeid):
