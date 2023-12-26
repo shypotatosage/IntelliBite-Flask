@@ -81,14 +81,14 @@ def recipes(ingredients, nutrition_profiles):
     return json.dumps({'status': 200, 'message': "success", 'data': recommended_recipes})
 
 
-@app.route("/get-detailrecipe/<recipeid>", methods=['GET'])
-def detailrecipe(recipeid):
-    recipeid = int(recipeid)  # Convert recipeid to integer
-    if 0 <= recipeid < len(dfRecipe):
-        # Get detailed information about the selected recipe
-        selected_recipe = dfRecipe.iloc[recipeid].to_dict()
+@app.route("/get-detailrecipe/<name>", methods=['GET'])
+def detailrecipe(name):
+    if not dfRecipe.loc[dfRecipe["recipe_name"] == name].empty:
 
-        return json.dumps({'status': 200, 'message': "success", 'data': selected_recipe})
+        # Get detailed information about the selected recipe
+        selected_recipe = dfRecipe.loc[dfRecipe["recipe_name"] == name].to_json(orient="records")[1:-1]
+
+        return json.dumps({'status': 200, 'message': "success", 'data': json.loads(selected_recipe)})
     else:
         return Response(json.dumps({'status': 404, 'message': "Recipe Not Found", 'data': ""}), status=404, mimetype='application/json')
 
