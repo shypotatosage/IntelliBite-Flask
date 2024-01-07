@@ -23,7 +23,7 @@ def get_ingredients():
     df = pd.read_csv('data.csv', delimiter='#')
     ingredient_list = df['ingredients'].values.astype('str')
     ingredient_list = "$".join(ingredient_list)
-    ingredient_list = ingredient_list.split('$')
+    ingredient_list = list(set(ingredient_list.split('$')))
     df_ingredient = pd.DataFrame(ingredient_list)
     df_json = df_ingredient[0].to_json(orient="records")
     
@@ -35,7 +35,7 @@ def get_nutrition_profiles():
     df = pd.read_csv('data.csv', delimiter='#')
     nutrition_profiles_list = df['nutrition_profiles'].values.astype('str')
     nutrition_profiles_list = "$".join(nutrition_profiles_list)
-    nutrition_profiles_list = nutrition_profiles_list.split('$')
+    nutrition_profiles_list = list(set(nutrition_profiles_list.split('$')))
     df_nutrition_profiles = pd.DataFrame(nutrition_profiles_list)
     df_json = df_nutrition_profiles[0].to_json(orient="records")
     
