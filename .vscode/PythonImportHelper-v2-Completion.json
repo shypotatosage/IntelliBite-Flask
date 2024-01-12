@@ -90,7 +90,7 @@
         "kind": 2,
         "importPath": "IntelliBite-Flask-project.app",
         "description": "IntelliBite-Flask-project.app",
-        "peekOfCode": "def recipes(ingredients, nutrition_profiles):\n    # Process user input\n    user_input = get_feature_vector({'ingredients': ingredients, 'nutrition_profiles': nutrition_profiles})\n    user_input_vector = vectorizer.transform([user_input])\n    # Calculate cosine similarity with user input\n    similarity_scores = cosine_similarity(user_input_vector, feature_matrix).flatten()\n    # Get indices of all recipes ordered by similarity\n    ordered_indices = similarity_scores.argsort()[::-1]\n    # Print cosine similarity scores\n    print(\"Cosine Similarity Scores:\")",
+        "peekOfCode": "def recipes(ingredients, nutrition_profiles):\n    # Process user input\n    user_input = get_feature_vector({'ingredients': ingredients, 'nutrition_profiles': nutrition_profiles})\n    user_input_vector = vectorizer.transform([user_input])\n    # Calculate cosine similarity with user input\n    similarity_scores = cosine_similarity(user_input_vector, feature_matrix).flatten()\n    # Get indices of all recipes ordered by similarity\n    ordered_indices = similarity_scores.argsort()[::-1]\n    indices = []\n    for i in ordered_indices:",
         "detail": "IntelliBite-Flask-project.app",
         "documentation": {}
     },

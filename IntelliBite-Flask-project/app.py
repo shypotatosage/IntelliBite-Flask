@@ -69,6 +69,11 @@ def recipes(ingredients, nutrition_profiles):
 
     # Get indices of all recipes ordered by similarity
     ordered_indices = similarity_scores.argsort()[::-1]
+    indices = []
+    
+    for i in ordered_indices:
+        if similarity_scores[i] >= 0.5:
+            indices.append(i)
 
     # Print cosine similarity scores
     print("Cosine Similarity Scores:")
@@ -76,7 +81,7 @@ def recipes(ingredients, nutrition_profiles):
         print(f"Recipe: {dfRecipe.iloc[idx]['recipe_name']}, Similarity Score: {score}")
 
     # Get recommended recipes with servings and timetotal
-    recommended_recipes = dfRecipe.iloc[ordered_indices][['recipe_name','servings', 'timetotal']].to_dict(orient='records')
+    recommended_recipes = dfRecipe.iloc[indices][['recipe_name','servings', 'timetotal']].to_dict(orient='records')
 
     return json.dumps({'status': 200, 'message': "success", 'data': recommended_recipes})
 
